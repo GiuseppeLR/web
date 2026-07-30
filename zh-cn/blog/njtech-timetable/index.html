@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="一款面向南京工业大学学生的课程表管理工具，使用 Flutter 构建">
+  <title>南工课程表 NJTech Timetable - DK Blog Place</title>
+  <link rel="icon" href="/assets/img/avatar.jpg" type="image/jpeg">
+  <link rel="stylesheet" href="../../../../assets/css/style.css">
+</head>
+<body>
+  <nav>
+    <div class="nav-inner">
+      <div class="nav-left">
+        <img src="/assets/img/avatar.jpg" alt="DK" class="nav-avatar">
+        <a href="/zh-cn/" class="nav-title">DK Blog Place</a>
+      </div>
+      <div class="nav-links" id="nav-links">
+        <a href="/zh-cn/">主页</a>
+        <a href="/zh-cn/blog/">博客</a>
+        <a href="/zh-cn/about.html">关于</a>
+        <a href="/zh-cn/contact.html">联系</a>
+        <a href="/zh-cn/search.html">搜索</a>
+      </div>
+      <div class="nav-controls">
+        <button class="nav-btn lang-btn" onclick="window.location.href='/'">EN</button>
+        <button class="nav-btn" id="theme-toggle">☀</button>
+        <button class="hamburger" id="hamburger">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+  <main>
+    <div class="container">
+      <article class="blog-post">
+        <header class="post-header">
+          <h1>南工课程表 NJTech Timetable</h1>
+          <p class="post-meta">Jul 29, 2026 &middot; <span class="tag">Flutter</span> <span class="tag">Mobile</span></p>
+        </header>
+        <div class="post-content">
+          <h2>项目简介</h2>
+          <p>南工课程表是一款面向南京工业大学学生的课程表管理工具，支持教务系统导入、XLS 导入、手动课程管理、课程提醒、课表分享、深色模式和课程冲突检测。该程序由 Dart 语言编写，结合 Kotlin 和 SwiftUI 为 iOS 和 Android 平台提供支持。</p>
+
+          <h2>功能特性</h2>
+          <ul>
+            <li>教务系统 WebView 导入课表</li>
+            <li>XLS 文件导入课表</li>
+            <li>手动添加、编辑、删除课程</li>
+            <li>当前周和学期开始日期设置</li>
+            <li>课程开始前系统通知提醒</li>
+            <li>课表导入/导出，便于同学之间分享</li>
+            <li>深色模式，可跟随系统自动切换</li>
+            <li>课程冲突检测</li>
+            <li>导入前自动备份和备份恢复</li>
+            <li>App 内反馈入口</li>
+          </ul>
+
+          <h2>技术栈</h2>
+          <ul>
+            <li>Flutter 3.x / Dart 3.x</li>
+            <li>Android (Kotlin)</li>
+            <li>iOS (SwiftUI)</li>
+          </ul>
+
+          <h2>相关链接</h2>
+          <p>GitHub：<a href="https://github.com/GiuseppeLR/njtech_timetable" target="_blank" rel="noopener">https://github.com/GiuseppeLR/njtech_timetable</a></p>
+        </div>
+      </article>
+    </div>
+  </main>
+  <footer>
+    <p>&copy; 2026 DK. 用心构建。</p>
+  </footer>
+  <script src="../../../../assets/js/main.js"></script>
+</body>
+</html>

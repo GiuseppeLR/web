@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A course schedule management tool for Nanjing Tech University students built with Flutter">
+  <title>NJTech Timetable - DK Blog Place</title>
+  <link rel="icon" href="/assets/img/avatar.jpg" type="image/jpeg">
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+  <nav>
+    <div class="nav-inner">
+      <div class="nav-left">
+        <img src="/assets/img/avatar.jpg" alt="DK" class="nav-avatar">
+        <a href="/" class="nav-title">DK Blog Place</a>
+      </div>
+      <div class="nav-links" id="nav-links">
+        <a href="/">Home</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about.html">About</a>
+        <a href="/contact.html">Contact</a>
+        <a href="/search.html">Search</a>
+      </div>
+      <div class="nav-controls">
+        <button class="nav-btn lang-btn" onclick="window.location.href='/zh-cn/'">中</button>
+        <button class="nav-btn" id="theme-toggle">☀</button>
+        <button class="hamburger" id="hamburger">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+  <main>
+    <div class="container">
+      <article class="post">
+        <header class="post-header">
+          <h1 class="post-title">NJTech Timetable</h1>
+          <p class="post-date">Jul 29, 2026</p>
+          <div class="post-tags">
+            <span class="tag">Flutter</span>
+            <span class="tag">Mobile</span>
+          </div>
+        </header>
+
+        <div class="post-content">
+          <h2>About</h2>
+          <p>NJTech Timetable (南工课程表) is a course schedule management tool designed for Nanjing Tech University students. It supports academic system import via WebView, XLS file import, manual course management, course reminders, schedule sharing, dark mode, and course conflict detection. Built with Flutter/Dart, with Kotlin and SwiftUI native integrations.</p>
+
+          <h2>Features</h2>
+          <ul>
+            <li>WebView import from academic system</li>
+            <li>XLS file import</li>
+            <li>Manual add, edit, delete courses</li>
+            <li>Current week and semester start date settings</li>
+            <li>System notification reminders before class</li>
+            <li>Schedule import/export for sharing</li>
+            <li>Dark mode with system auto-switch</li>
+            <li>Course conflict detection</li>
+            <li>Auto backup before import with restore</li>
+            <li>In-app feedback</li>
+          </ul>
+
+          <h2>Tech Stack</h2>
+          <ul>
+            <li>Flutter 3.x / Dart 3.x</li>
+            <li>Android (Kotlin)</li>
+            <li>iOS (SwiftUI)</li>
+          </ul>
+
+          <h2>Links</h2>
+          <p>GitHub: <a href="https://github.com/GiuseppeLR/njtech_timetable" target="_blank" rel="noopener">https://github.com/GiuseppeLR/njtech_timetable</a></p>
+        </div>
+      </article>
+    </div>
+  </main>
+  <footer>
+    <p>&copy; 2026 DK. Built with care.</p>
+  </footer>
+  <script src="/assets/js/main.js"></script>
+</body>
+</html>
