@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="博客文章">
-  <title>博客 - DK Blog Place</title>
+  <meta name="description" content="在 DK Blog Place 留言">
+  <title>留言板 - DK Blog Place</title>
   <link rel="icon" href="/web/assets/img/avatar.jpg" type="image/jpeg">
   <link rel="stylesheet" href="/web/assets/css/style.css">
 </head>
@@ -25,7 +25,7 @@
         <a href="/web/zh-cn/search.html">搜索</a>
       </div>
       <div class="nav-controls">
-        <button class="nav-btn lang-btn" onclick="window.location.href='/web/'">EN</button>
+        <button class="nav-btn lang-btn" onclick="window.location.href='/web/guestbook.html'">EN</button>
         <button class="nav-btn" id="theme-toggle">☀</button>
         <button class="hamburger" id="hamburger">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
@@ -35,24 +35,32 @@
   </nav>
   <main>
     <div class="container">
-      <section class="section">
-        <h1>博客文章</h1>
-        <h2>文章列表</h2>
-        <div class="blog-card">
-          <a href="/web/zh-cn/blog/njtech-timetable/" class="blog-card-link">
-            <h3>南工课程表 NJTech Timetable</h3>
-            <p class="blog-card-meta">Jul 29, 2026 &middot; <span class="tag">Flutter</span> <span class="tag">Mobile</span></p>
-            <p class="blog-card-excerpt">一款面向南京工业大学学生的课程表管理工具，使用 Flutter 构建。</p>
-          </a>
+      <div class="guestbook-page">
+        <div class="guestbook-hero">
+          <div class="guestbook-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="40" height="40">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+          </div>
+          <h1 class="guestbook-title">留言板</h1>
+          <p class="guestbook-subtitle">留下你想说的话，分享你的想法，或只是打个招呼！</p>
         </div>
-        <div class="blog-card">
-          <a href="/web/zh-cn/blog/pdfreader/" class="blog-card-link">
-            <h3>PDF Reader for macOS</h3>
-            <p class="blog-card-meta">Jul 29, 2026 &middot; <span class="tag">Swift</span> <span class="tag">macOS</span> <span class="tag">SwiftUI</span></p>
-            <p class="blog-card-excerpt">一个功能丰富的 macOS 原生 PDF 阅读器，使用 SwiftUI + PDFKit 构建。支持标注、书签、搜索、合并、提取、签名等功能。</p>
-          </a>
+        <div class="guestbook-notice">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+          </svg>
+          <span>评论由 GitHub Issues 驱动，需要 GitHub 账号才能留言。</span>
         </div>
-      </section>
+        <div id="comments">
+          <script src="https://utteranc.es/client.js"
+            repo="GiuseppeLR/web"
+            issue-term="guestbook"
+            theme="preferred-color-scheme"
+            crossorigin="anonymous"
+            async>
+          </script>
+        </div>
+      </div>
     </div>
   </main>
   <footer>

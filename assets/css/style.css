@@ -545,6 +545,69 @@ main { padding-top: 56px; }
   font-size: 11px;
 }
 
+/* ── Guestbook ── */
+.guestbook-page {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.guestbook-hero {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.guestbook-icon {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  background: var(--tag-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.guestbook-icon svg {
+  color: var(--accent);
+}
+
+.guestbook-title {
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.guestbook-subtitle {
+  color: var(--text-secondary);
+  font-size: 15px;
+}
+
+.guestbook-notice {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  font-size: 13px;
+  margin-bottom: 32px;
+}
+
+.guestbook-notice svg {
+  flex-shrink: 0;
+  color: var(--accent);
+}
+
+/* utterances customization */
+#comments {
+  margin-top: 8px;
+}
+
+.utterances {
+  max-width: 100% !important;
+}
+
 /* ── Footer ── */
 footer {
   text-align: center;
