@@ -13,8 +13,8 @@
       titleZh: '\u5357\u5DE5\u8BFE\u7A0B\u8868',
       date: 'Jul 29, 2026',
       tags: ['Flutter', 'Mobile'],
-      url: '/blog/njtech-timetable/',
-      urlZh: '/zh-cn/blog/njtech-timetable/',
+      url: '/web/blog/njtech-timetable/',
+      urlZh: '/web/zh-cn/blog/njtech-timetable/',
       excerpt: 'A course schedule management tool for Nanjing Tech University students built with Flutter.',
       excerptZh: '\u4E00\u6B3E\u9762\u5411\u5357\u4EAC\u5DE5\u4E1A\u5927\u5B66\u5B66\u751F\u7684\u8BFE\u7A0B\u8868\u7BA1\u7406\u5DE5\u5177\uFF0C\u4F7F\u7528 Flutter \u6784\u5EFA\u3002'
     }
