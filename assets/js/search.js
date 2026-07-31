@@ -16,8 +16,8 @@
       titleZh: '\u5357\u5DE5\u8BFE\u7A0B\u8868',
       date: 'Jul 29, 2026',
       tags: ['Flutter', 'Mobile'],
-      url: '/web/blog/njtech-timetable/',
-      urlZh: '/web/zh-cn/blog/njtech-timetable/',
+      url: '/blog/njtech-timetable/',
+      urlZh: '/zh-cn/blog/njtech-timetable/',
       excerpt: 'A course schedule management tool for Nanjing Tech University students built with Flutter.',
       excerptZh: '\u4E00\u6B3E\u9762\u5411\u5357\u4EAC\u5DE5\u4E1A\u5927\u5B66\u5B66\u751F\u7684\u8BFE\u7A0B\u8868\u7BA1\u7406\u5DE5\u5177\uFF0C\u4F7F\u7528 Flutter \u6784\u5EFA\u3002'
     },
@@ -26,8 +26,8 @@
       titleZh: 'PDF Reader for macOS',
       date: 'Jul 29, 2026',
       tags: ['Swift', 'macOS', 'SwiftUI'],
-      url: '/web/blog/pdfreader/',
-      urlZh: '/web/zh-cn/blog/pdfreader/',
+      url: '/blog/pdfreader/',
+      urlZh: '/zh-cn/blog/pdfreader/',
       excerpt: 'A feature-rich native macOS PDF reader built with SwiftUI & PDFKit.',
       excerptZh: '\u4E00\u4E2A\u529F\u80FD\u4E30\u5BCC\u7684 macOS \u539F\u751F PDF \u9605\u8BFB\u5668\uFF0C\u4F7F\u7528 SwiftUI + PDFKit \u6784\u5EFA\u3002'
     }
