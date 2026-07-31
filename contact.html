@@ -39,7 +39,7 @@
         <ul class="contact-list">
           <li><strong>GitHub:</strong> <a href="https://www.github.com/GiuseppeLR" target="_blank" rel="noopener">https://www.github.com/GiuseppeLR</a></li>
           <li><strong>QQ:</strong> 312540471</li>
-          <li><strong>Email:</strong> <a href="mailto:yni501044@gmail.com">yni501044@gmail.com</a></li>
+          <li><strong>Email:</strong> <a href="#" class="mailto-link">email<span style="display:none">-hidden</span>@example.com</a></li>
         </ul>
       </div>
     </div>
@@ -48,5 +48,16 @@
     <p>&copy; 2026 DKa1pha.</p>
   </footer>
   <script src="/assets/js/main.js"></script>
+  <script>
+    // Email obfuscation: hide from scrapers, keep clickable for visitors
+    (function() {
+      // Build email from char codes
+      var email = String.fromCharCode(121, 110, 105, 53, 48, 49, 48, 52, 52, 64, 103, 109, 97, 105, 108, 46, 99, 111, 109);
+      document.querySelectorAll('.mailto-link').forEach(function(link) {
+        link.href = 'mailto:' + email;
+        link.textContent = email;
+      });
+    })();
+  </script>
 </body>
 </html>
