@@ -1,0 +1,21 @@
+# Security contact for dka1pha.cc
+# This file is defined by RFC 9116: https://www.rfc-editor.org/rfc/rfc9116
+# Fallback location - canonical version lives at /.well-known/security.txt
+
+# Where to report security vulnerabilities
+Contact: mailto:yni501044@gmail.com
+
+# Human-readable contact alternative
+Contact: https://github.com/GiuseppeLR
+
+# Expiry date (must be updated at least once a year)
+Expires: 2027-08-01T00:00:00.000Z
+
+# Preferred languages for security reports
+Preferred-Languages: zh, en
+
+# Canonical URL of this file
+Canonical: https://dka1pha.cc/security.txt
+
+# Full security policy
+Policy: https://dka1pha.cc/about.html
