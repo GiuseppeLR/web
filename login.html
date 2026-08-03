@@ -45,6 +45,7 @@
           </div>
           <h1 class="auth-title">Welcome back</h1>
           <p class="auth-subtitle">Sign in to your account to continue</p>
+          <p style="font-size:10px;color:#999;text-align:center">v2-debug</p>
 
           <div class="auth-tabs" role="tablist">
             <button type="button" class="auth-tab active" data-tab="phone" role="tab">Phone</button>
@@ -213,7 +214,13 @@
           startOtpCountdown(otpSendBtn, 60);
         } catch (err) {
           console.error('OTP send error:', err);
-          alert('Error: ' + JSON.stringify(err, null, 2) + '\nPhone: ' + phone);
+          var errInfo = 'message: ' + (err.message || 'N/A') + '\n';
+          errInfo += 'status: ' + (err.status || 'N/A') + '\n';
+          errInfo += 'code: ' + (err.code || 'N/A') + '\n';
+          errInfo += 'name: ' + (err.name || 'N/A') + '\n';
+          errInfo += 'keys: ' + Object.keys(err).join(', ') + '\n';
+          errInfo += 'phone: ' + phone;
+          alert(errInfo);
           otpSendBtn.disabled = false;
         }
       });
