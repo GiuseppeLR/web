@@ -6,7 +6,11 @@
   const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_7Q1yciT5LqZT6q_0GJfmpA_q6oU7QgS';
 
   // Expose the client globally for page scripts
-  window.supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+  window.supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+    auth: {
+      experimental: { passkey: true }
+    }
+  });
 
   // Handle OAuth redirect callback: after Google/Apple sign-in, browser
   // returns to this page with ?code=... in the URL. supabase-js auto
