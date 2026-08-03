@@ -159,16 +159,34 @@
     (function() {
       'use strict';
 
-      // ── Already signed in? Show notice instead of the form ──
+      // ── Already signed in? Show notice with Passkey setup ──
       supabaseClient.auth.getSession().then(({ data }) => {
         if (data.session) {
           const card = document.querySelector('.auth-card');
+          const iconHTML = card.querySelector('.auth-icon').outerHTML;
           card.innerHTML =
-            '<div class="auth-icon">' + card.querySelector('.auth-icon').outerHTML + '</div>' +
+            iconHTML +
             '<h1 class="auth-title">You are signed in</h1>' +
             '<p class="auth-subtitle">' + (data.session.user.email || data.session.user.phone || '') + '</p>' +
-            '<button type="button" class="auth-btn" id="logout-btn" style="margin-top:8px">Sign Out</button>' +
+            '<button type="button" class="auth-btn" id="passkey-setup-btn" style="margin-top:8px">Set up Passkey</button>' +
+            '<button type="button" class="auth-btn" id="logout-btn" style="margin-top:8px;opacity:0.7">Sign Out</button>' +
             '<p class="auth-footer"><a href="/">Back to home</a></p>';
+          document.getElementById('passkey-setup-btn').addEventListener('click', async () => {
+            const btn = document.getElementById('passkey-setup-btn');
+            btn.disabled = true;
+            btn.textContent = 'Setting up...';
+            try {
+              const { error } = await supabaseClient.auth.registerPasskey();
+              if (error) throw error;
+              alert('Passkey registered! Next time you can sign in with Touch ID / Face ID.');
+              btn.textContent = 'Passkey Ready!';
+              btn.style.opacity = '0.7';
+            } catch (err) {
+              alert(err.message || 'Failed to register passkey.');
+              btn.disabled = false;
+              btn.textContent = 'Set up Passkey';
+            }
+          });
           document.getElementById('logout-btn').addEventListener('click', async () => {
             await supabaseClient.auth.signOut();
             window.location.reload();
