@@ -65,4 +65,16 @@
       link.classList.add('active');
     }
   });
+
+  // ─── Password visibility toggle (auth pages) ───
+  document.querySelectorAll('.auth-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const wrap = btn.closest('.auth-input-wrap');
+      if (!wrap) return;
+      const input = wrap.querySelector('.auth-password');
+      if (!input) return;
+      const show = input.type === 'password';
+      input.type = show ? 'text' : 'password';
+    });
+  });
 })();
