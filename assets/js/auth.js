@@ -10,9 +10,10 @@
 
   // Handle OAuth redirect callback: after Google/Apple sign-in, browser
   // returns to this page with ?code=... in the URL. supabase-js auto
-  // exchanges it; we land with an active session.
+  // exchanges it; we land with an active session. Only redirect in that case.
+  const hasOAuthCode = new URLSearchParams(window.location.search).has('code');
   supabaseClient.auth.getSession().then(({ data }) => {
-    if (data.session) {
+    if (data.session && hasOAuthCode) {
       const redirectTo = sessionStorage.getItem('redirectAfterLogin') || '/';
       sessionStorage.removeItem('redirectAfterLogin');
       const path = window.location.pathname;

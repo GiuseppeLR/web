@@ -131,6 +131,23 @@
       const emailInput = document.getElementById('email');
       const passwordInput = document.getElementById('password');
 
+      // ── 已登录？显示提示而非表单 ──
+      supabaseClient.auth.getSession().then(({ data }) => {
+        if (data.session) {
+          const card = document.querySelector('.auth-card');
+          card.innerHTML =
+            '<div class="auth-icon">' + card.querySelector('.auth-icon').outerHTML + '</div>' +
+            '<h1 class="auth-title">你已登录</h1>' +
+            '<p class="auth-subtitle">' + (data.session.user.email || '') + '</p>' +
+            '<button type="button" class="auth-btn" id="logout-btn" style="margin-top:8px">退出登录</button>' +
+            '<p class="auth-footer"><a href="/zh-cn/">返回首页</a></p>';
+          document.getElementById('logout-btn').addEventListener('click', async () => {
+            await supabaseClient.auth.signOut();
+            window.location.reload();
+          });
+        }
+      });
+
       // ── 邮箱密码登录 ──
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
