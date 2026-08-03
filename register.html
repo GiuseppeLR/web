@@ -45,6 +45,7 @@
           </div>
           <h1 class="auth-title">Create account</h1>
           <p class="auth-subtitle">Join DK Blog Place in just a few seconds</p>
+          <p style="font-size:10px;color:#999;text-align:center">v3-debug</p>
 
           <div class="auth-tabs" role="tablist">
             <button type="button" class="auth-tab active" data-tab="phone" role="tab">Phone</button>
@@ -225,7 +226,14 @@
           alert('Verification code sent! Check your phone messages.');
           startOtpCountdown(otpSendBtn, 60);
         } catch (err) {
-          alert(err.message);
+          console.error('OTP send error:', err);
+          var dbg = 'name: ' + (err.name||'') + '\n';
+          dbg += 'message: ' + (err.message||'') + '\n';
+          dbg += 'status: ' + (err.status||'') + '\n';
+          dbg += 'keys: ' + Object.keys(err).join(',') + '\n';
+          dbg += 'stringify: ' + JSON.stringify(err) + '\n';
+          dbg += 'phone: ' + phone;
+          alert(dbg);
           otpSendBtn.disabled = false;
         }
       });
