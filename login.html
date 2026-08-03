@@ -212,7 +212,8 @@
           alert('Verification code sent! Check your phone messages.');
           startOtpCountdown(otpSendBtn, 60);
         } catch (err) {
-          alert(err.message);
+          console.error('OTP send error:', err);
+          alert('Error: ' + JSON.stringify(err, null, 2) + '\nPhone: ' + phone);
           otpSendBtn.disabled = false;
         }
       });

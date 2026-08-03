@@ -215,7 +215,8 @@
           alert('验证码已发送！请查收手机短信。');
           startOtpCountdown(otpSendBtn, 60);
         } catch (err) {
-          alert(err.message);
+          console.error('OTP send error:', err);
+          alert('错误详情: ' + JSON.stringify(err, null, 2) + '\n手机号: ' + phone);
           otpSendBtn.disabled = false;
         }
       });
