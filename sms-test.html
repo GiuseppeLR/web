@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SMS Diagnostic Test</title>
+  <style>
+    body { font-family: monospace; padding: 20px; max-width: 800px; margin: 0 auto; background: #1a1a1a; color: #e0e0e0; }
+    h1 { color: #4FC3F7; }
+    h2 { color: #81C784; margin-top: 24px; }
+    button { padding: 10px 20px; font-size: 14px; cursor: pointer; background: #333; color: #fff; border: 1px solid #555; border-radius: 4px; margin: 4px; }
+    button:hover { background: #444; }
+    input { padding: 8px; font-size: 14px; background: #222; color: #fff; border: 1px solid #555; border-radius: 4px; width: 200px; }
+    pre { background: #111; padding: 12px; border-radius: 6px; overflow-x: auto; white-space: pre-wrap; word-break: break-all; border: 1px solid #333; }
+    .ok { color: #4CAF50; }
+    .err { color: #EF5350; }
+    .warn { color: #FFB74D; }
+    #log { min-height: 100px; }
+  </style>
+</head>
+<body>
+  <h1>SMS Diagnostic Tool</h1>
+
+  <h2>1. Worker Health Check</h2>
+  <button onclick="testWorker()">Check Worker Status</button>
+  <pre id="worker-result">Click button to test...</pre>
+
+  <h2>2. Supabase Auth - Send OTP</h2>
+  <p>
+    Phone: <select id="country-code">
+      <option value="+86">+86 (China)</option>
+      <option value="+1">+1 (US)</option>
+    </select>
+    <input type="tel" id="phone-input" placeholder="Phone number without country code">
+    <button onclick="testSendOtp()">Send OTP via Supabase</button>
+  </p>
+  <pre id="otp-result">Click button to test...</pre>
+
+  <h2>3. Raw Supabase API Call (fetch)</h2>
+  <p>Same phone as above. This bypasses supabase-js and shows the raw HTTP response.</p>
+  <button onclick="testRawApi()">Raw API Call</button>
+  <pre id="raw-result">Click button to test...</pre>
+
+  <h2>4. Full Error Log</h2>
+  <pre id="log">No logs yet.</pre>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = 'https://utdvcslcnbheqayhhzhg.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_7Q1yciT5LqZT6q_0GJfmpA_q6oU7QgS';
+    const WORKER_URL = 'https://sms-gateway.yni501044.workers.dev';
+
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+      auth: { experimental: { passkey: true } }
+    });
+
+    function log(msg) {
+      const el = document.getElementById('log');
+      const ts = new Date().toISOString().split('T')[1];
+      el.textContent = `[${ts}] ${msg}\n` + el.textContent;
+    }
+
+    async function testWorker() {
+      const el = document.getElementById('worker-result');
+      el.textContent = 'Fetching...';
+      try {
+        const resp = await fetch(WORKER_URL, { method: 'GET' });
+        const text = await resp.text();
+        el.textContent = `Status: ${resp.status}\nHeaders: ${JSON.stringify(Object.fromEntries(resp.headers.entries()), null, 2)}\nBody: ${text}`;
+        log('Worker health check: ' + resp.status);
+      } catch (e) {
+        el.textContent = `ERROR: ${e.message}`;
+        el.className = 'err';
+        log('Worker health check FAILED: ' + e.message);
+      }
+    }
+
+    async function testSendOtp() {
+      const el = document.getElementById('otp-result');
+      const phone = document.getElementById('country-code').value + document.getElementById('phone-input').value.trim();
+      if (!document.getElementById('phone-input').value.trim()) {
+        el.textContent = 'Please enter a phone number';
+        return;
+      }
+      el.textContent = `Calling signInWithOtp({ phone: "${phone}" })...\n`;
+      log('Testing signInWithOtp with phone: ' + phone);
+
+      try {
+        const { data, error } = await sb.auth.signInWithOtp({ phone });
+        
+        let output = '';
+        if (error) {
+          output += '<span class="err">ERROR OBJECT:</span>\n';
+          output += `  name: "${error.name}"\n`;
+          output += `  message: "${error.message}"\n`;
+          output += `  status: ${error.status}\n`;
+          output += `  toString(): ${error.toString()}\n`;
+          output += `  JSON.stringify: ${JSON.stringify(error)}\n`;
+          output += `  own keys: ${Object.keys(error).join(', ')}\n`;
+          output += `  all props (for...in): `;
+          let props = [];
+          for (let k in error) { props.push(`${k}=${error[k]}`); }
+          output += props.join(', ') + '\n';
+          output += `  __proto__: ${Object.getPrototypeOf(error)?.constructor?.name}\n`;
+          log('OTP error: name=' + error.name + ' message=' + error.message + ' status=' + error.status);
+        } else {
+          output += '<span class="ok">SUCCESS:</span>\n';
+          output += JSON.stringify(data, null, 2);
+          log('OTP sent successfully');
+        }
+        el.innerHTML = output;
+      } catch (e) {
+        el.innerHTML = `<span class="err">CAUGHT EXCEPTION:</span>\n  ${e.message}\n  ${e.stack}`;
+        log('Exception: ' + e.message);
+      }
+    }
+
+    async function testRawApi() {
+      const el = document.getElementById('raw-result');
+      const phone = document.getElementById('country-code').value + document.getElementById('phone-input').value.trim();
+      if (!document.getElementById('phone-input').value.trim()) {
+        el.textContent = 'Please enter a phone number';
+        return;
+      }
+      
+      el.textContent = `POST ${SUPABASE_URL}/auth/v1/otp\n`;
+      log('Raw API call for phone: ' + phone);
+
+      try {
+        const resp = await fetch(`${SUPABASE_URL}/auth/v1/otp`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`
+          },
+          body: JSON.stringify({ phone, channel: 'sms' })
+        });
+
+        const text = await resp.text();
+        let output = `HTTP Status: ${resp.status}\n`;
+        output += `Response Headers:\n`;
+        resp.headers.forEach((v, k) => { output += `  ${k}: ${v}\n`; });
+        output += `\nResponse Body:\n${text}`;
+        el.textContent = output;
+        log('Raw API response: ' + resp.status + ' body=' + text.substring(0, 200));
+      } catch (e) {
+        el.textContent = `FETCH ERROR: ${e.message}`;
+        log('Raw API fetch error: ' + e.message);
+      }
+    }
+  </script>
+</body>
+</html>
