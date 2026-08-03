@@ -148,7 +148,6 @@
 
           <p class="auth-footer">还没有账号？<a href="/zh-cn/register.html">立即注册</a></p>
         </div>
-        <p class="auth-note">当前为界面原型，尚未接入真实认证系统。</p>
       </div>
     </div>
   </main>
@@ -216,7 +215,7 @@
           startOtpCountdown(otpSendBtn, 60);
         } catch (err) {
           console.error('OTP send error:', err);
-          alert('错误详情: ' + JSON.stringify(err, null, 2) + '\n手机号: ' + phone);
+          alert(err.message || '验证码发送失败，请重试。');
           otpSendBtn.disabled = false;
         }
       });

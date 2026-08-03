@@ -45,7 +45,6 @@
           </div>
           <h1 class="auth-title">Welcome back</h1>
           <p class="auth-subtitle">Sign in to your account to continue</p>
-          <p style="font-size:10px;color:#999;text-align:center">v2-debug</p>
 
           <div class="auth-tabs" role="tablist">
             <button type="button" class="auth-tab active" data-tab="phone" role="tab">Phone</button>
@@ -146,7 +145,6 @@
 
           <p class="auth-footer">Don't have an account? <a href="/register.html">Sign up</a></p>
         </div>
-        <p class="auth-note">This is a UI prototype. Authentication is not connected yet.</p>
       </div>
     </div>
   </main>
@@ -214,13 +212,7 @@
           startOtpCountdown(otpSendBtn, 60);
         } catch (err) {
           console.error('OTP send error:', err);
-          var errInfo = 'message: ' + (err.message || 'N/A') + '\n';
-          errInfo += 'status: ' + (err.status || 'N/A') + '\n';
-          errInfo += 'code: ' + (err.code || 'N/A') + '\n';
-          errInfo += 'name: ' + (err.name || 'N/A') + '\n';
-          errInfo += 'keys: ' + Object.keys(err).join(', ') + '\n';
-          errInfo += 'phone: ' + phone;
-          alert(errInfo);
+          alert(err.message || 'Failed to send verification code. Please try again.');
           otpSendBtn.disabled = false;
         }
       });
