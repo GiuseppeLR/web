@@ -37,12 +37,31 @@
 
   // ─── Active Nav Highlight ───
   const currentPath = window.location.pathname.replace(/\/web\//, '/').replace(/\/$/, '') || '/index';
+  // Language roots (e.g. '/' or '/zh-cn') are treated as home pages
+  const langRoots = ['', '/zh-cn'];
+
   document.querySelectorAll('.nav-links a').forEach(link => {
     const href = link.getAttribute('href');
-    if (href && currentPath.startsWith(href.replace(/\/$/, '')) && href !== '/') {
-      link.classList.add('active');
+    if (!href) return;
+    const normalizedHref = href.replace(/\/$/, '');
+
+    // Home link: only highlight when actually on the home page
+    if (langRoots.indexOf(normalizedHref) !== -1) {
+      const isHome =
+        currentPath === normalizedHref ||
+        currentPath === normalizedHref + '/index' ||
+        currentPath === normalizedHref + '/index.html' ||
+        currentPath === '/index';
+      if (isHome) link.classList.add('active');
+      return;
     }
-    if (href === '/' && (currentPath === '/index' || currentPath === '')) {
+
+    // Other links: exact match or child path match
+    if (
+      currentPath === normalizedHref ||
+      currentPath === normalizedHref + '.html' ||
+      currentPath.indexOf(normalizedHref + '/') === 0
+    ) {
       link.classList.add('active');
     }
   });
