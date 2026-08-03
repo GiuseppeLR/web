@@ -46,55 +46,99 @@
           <h1 class="auth-title">Create account</h1>
           <p class="auth-subtitle">Join DK Blog Place in just a few seconds</p>
 
-          <form class="auth-form" onsubmit="return false">
-            <div>
-              <label class="auth-label" for="nickname">Nickname</label>
-              <div class="auth-input-wrap">
-                <svg class="auth-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-                </svg>
-                <input type="text" id="nickname" class="auth-input" placeholder="How should we call you?" autocomplete="nickname">
-              </div>
-            </div>
-            <div>
-              <label class="auth-label" for="email">Email</label>
-              <div class="auth-input-wrap">
-                <svg class="auth-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
-                </svg>
-                <input type="email" id="email" class="auth-input" placeholder="you@example.com" autocomplete="email" required>
-              </div>
-            </div>
-            <div>
-              <label class="auth-label" for="password">Password</label>
-              <div class="auth-input-wrap">
-                <svg class="auth-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                </svg>
-                <input type="password" id="password" class="auth-input auth-password" placeholder="At least 8 characters" autocomplete="new-password" required>
-                <button type="button" class="auth-toggle" aria-label="Show password">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+          <div class="auth-tabs" role="tablist">
+            <button type="button" class="auth-tab active" data-tab="phone" role="tab">Phone</button>
+            <button type="button" class="auth-tab" data-tab="email" role="tab">Email</button>
+          </div>
+
+          <!-- Phone signup -->
+          <div class="auth-tab-pane active" id="pane-phone">
+            <form class="auth-form" data-form="phone" onsubmit="return false">
+              <div>
+                <label class="auth-label" for="nickname-phone">Nickname</label>
+                <div class="auth-input-wrap">
+                  <svg class="auth-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
                   </svg>
-                </button>
+                  <input type="text" id="nickname-phone" class="auth-input" placeholder="How should we call you?" autocomplete="nickname">
+                </div>
               </div>
-            </div>
-            <div>
-              <label class="auth-label" for="confirm-password">Confirm password</label>
-              <div class="auth-input-wrap">
-                <svg class="auth-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                </svg>
-                <input type="password" id="confirm-password" class="auth-input auth-password" placeholder="Re-enter your password" autocomplete="new-password" required>
-                <button type="button" class="auth-toggle" aria-label="Show password">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+              <div>
+                <label class="auth-label">Phone number</label>
+                <div class="phone-input-row">
+                  <select class="phone-code-select" id="phone-code"></select>
+                  <div class="auth-input-wrap" style="flex:1">
+                    <svg class="auth-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/>
+                    </svg>
+                    <input type="tel" id="phone-number" class="auth-input" placeholder="Phone number" autocomplete="tel" inputmode="numeric">
+                  </div>
+                </div>
+              </div>
+              <div>
+                <label class="auth-label" for="otp-code">Verification code</label>
+                <div class="otp-row">
+                  <input type="text" id="otp-code" class="otp-input" placeholder="6-digit code" inputmode="numeric" maxlength="6" autocomplete="one-time-code">
+                  <button type="button" class="otp-send-btn" id="otp-send">Send code</button>
+                </div>
+                <p class="phone-hint">A verification code will be sent to your phone. Verifying auto-creates your account and signs you in.</p>
+              </div>
+              <button type="submit" class="auth-btn" id="phone-submit">Get Code &amp; Register</button>
+            </form>
+          </div>
+
+          <!-- Email signup -->
+          <div class="auth-tab-pane" id="pane-email">
+            <form class="auth-form" data-form="email" onsubmit="return false">
+              <div>
+                <label class="auth-label" for="nickname">Nickname</label>
+                <div class="auth-input-wrap">
+                  <svg class="auth-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
                   </svg>
-                </button>
+                  <input type="text" id="nickname" class="auth-input" placeholder="How should we call you?" autocomplete="nickname">
+                </div>
               </div>
-            </div>
-            <button type="submit" class="auth-btn">Create Account</button>
-          </form>
+              <div>
+                <label class="auth-label" for="email">Email</label>
+                <div class="auth-input-wrap">
+                  <svg class="auth-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
+                  </svg>
+                  <input type="email" id="email" class="auth-input" placeholder="you@example.com" autocomplete="email" required>
+                </div>
+              </div>
+              <div>
+                <label class="auth-label" for="password">Password</label>
+                <div class="auth-input-wrap">
+                  <svg class="auth-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                  </svg>
+                  <input type="password" id="password" class="auth-input auth-password" placeholder="At least 8 characters" autocomplete="new-password" required>
+                  <button type="button" class="auth-toggle" aria-label="Show password">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <div>
+                <label class="auth-label" for="confirm-password">Confirm password</label>
+                <div class="auth-input-wrap">
+                  <svg class="auth-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                  </svg>
+                  <input type="password" id="confirm-password" class="auth-input auth-password" placeholder="Re-enter your password" autocomplete="new-password" required>
+                  <button type="button" class="auth-toggle" aria-label="Show password">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <button type="submit" class="auth-btn">Create Account</button>
+            </form>
+          </div>
 
           <div class="auth-divider"><span>or sign up with</span></div>
 
@@ -140,13 +184,83 @@
   <script src="/assets/js/main.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="/assets/js/auth.js"></script>
+  <script src="/assets/js/auth-phone.js"></script>
   <script>
     (function() {
       'use strict';
-      const form = document.querySelector('.auth-form');
-      const submitBtn = form.querySelector('.auth-btn');
 
-      form.addEventListener('submit', async (e) => {
+      // ── Tab switching (phone / email) ──
+      const tabs = document.querySelectorAll('.auth-tab');
+      const panes = document.querySelectorAll('.auth-tab-pane');
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          tabs.forEach(t => t.classList.remove('active'));
+          panes.forEach(p => p.classList.remove('active'));
+          tab.classList.add('active');
+          document.getElementById('pane-' + tab.dataset.tab).classList.add('active');
+        });
+      });
+
+      // ── Populate country codes ──
+      populateCountryCodes(document.getElementById('phone-code'), '+86');
+
+      // ── Phone signup (OTP) ──
+      const phoneForm = document.querySelector('form[data-form="phone"]');
+      const phoneNumber = document.getElementById('phone-number');
+      const phoneCode = document.getElementById('phone-code');
+      const otpCode = document.getElementById('otp-code');
+      const otpSendBtn = document.getElementById('otp-send');
+      const phoneSubmitBtn = document.getElementById('phone-submit');
+      let pendingPhone = null;
+
+      // Send OTP
+      otpSendBtn.addEventListener('click', async () => {
+        const phone = phoneCode.value + phoneNumber.value.trim();
+        if (!phoneNumber.value.trim()) { alert('Please enter your phone number.'); return; }
+        otpSendBtn.disabled = true;
+        try {
+          const { error } = await supabaseClient.auth.signInWithOtp({ phone });
+          if (error) throw error;
+          pendingPhone = phone;
+          alert('Verification code sent! Check your phone messages.');
+          startOtpCountdown(otpSendBtn, 60);
+        } catch (err) {
+          alert(err.message);
+          otpSendBtn.disabled = false;
+        }
+      });
+
+      // Verify OTP (registers + signs in)
+      phoneForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const code = otpCode.value.trim();
+        if (!code || code.length !== 6) { alert('Please enter the 6-digit code.'); return; }
+        if (!pendingPhone) { alert('Please request a code first.'); return; }
+        phoneSubmitBtn.disabled = true;
+        phoneSubmitBtn.textContent = 'Verifying...';
+        try {
+          const { data, error } = await supabaseClient.auth.verifyOtp({
+            phone: pendingPhone,
+            token: code,
+            type: 'sms'
+          });
+          if (error) throw error;
+          const nickname = document.getElementById('nickname-phone').value.trim();
+          if (nickname && data.session) {
+            await supabaseClient.auth.updateUser({ data: { nickname, username: nickname } });
+          }
+          window.location.href = '/';
+        } catch (err) {
+          alert(err.message);
+          phoneSubmitBtn.disabled = false;
+          phoneSubmitBtn.textContent = 'Get Code & Register';
+        }
+      });
+
+      // ── Email signup ──
+      const emailForm = document.querySelector('form[data-form="email"]');
+      const emailSubmitBtn = emailForm.querySelector('.auth-btn');
+      emailForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const nickname = document.getElementById('nickname').value.trim();
         const email = document.getElementById('email').value.trim();
@@ -156,8 +270,8 @@
         if (password.length < 8) { alert('Password must be at least 8 characters.'); return; }
         if (password !== confirm) { alert('Passwords do not match.'); return; }
 
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Creating account...';
+        emailSubmitBtn.disabled = true;
+        emailSubmitBtn.textContent = 'Creating account...';
         try {
           const { data, error } = await supabaseClient.auth.signUp({
             email,
@@ -173,13 +287,13 @@
           } else {
             // Email confirmation enabled - check inbox
             alert('Check your email to confirm your account!');
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Create Account';
+            emailSubmitBtn.disabled = false;
+            emailSubmitBtn.textContent = 'Create Account';
           }
         } catch (err) {
           alert(err.message);
-          submitBtn.disabled = false;
-          submitBtn.textContent = 'Create Account';
+          emailSubmitBtn.disabled = false;
+          emailSubmitBtn.textContent = 'Create Account';
         }
       });
 
