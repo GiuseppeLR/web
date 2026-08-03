@@ -140,5 +140,78 @@
     <p>&copy; 2026 DKa1pha.</p>
   </footer>
   <script src="/assets/js/main.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/assets/js/auth.js"></script>
+  <script>
+    (function() {
+      'use strict';
+      const form = document.querySelector('.auth-form');
+      const submitBtn = form.querySelector('.auth-btn');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const nickname = document.getElementById('nickname').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        const confirm = document.getElementById('confirm-password').value;
+
+        if (password.length < 8) { alert('密码至少需要 8 位字符。'); return; }
+        if (password !== confirm) { alert('两次输入的密码不一致。'); return; }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = '创建中...';
+        try {
+          const { data, error } = await supabaseClient.auth.signUp({
+            email,
+            password,
+            options: {
+              data: { nickname, username: nickname }
+            }
+          });
+          if (error) throw error;
+          if (data.session) {
+            // 邮箱验证已关闭，直接登录成功
+            window.location.href = '/zh-cn/';
+          } else {
+            // 需要邮箱验证
+            alert('注册成功！请查收邮箱确认邮件。');
+            submitBtn.disabled = false;
+            submitBtn.textContent = '创建账号';
+          }
+        } catch (err) {
+          alert(err.message);
+          submitBtn.disabled = false;
+          submitBtn.textContent = '创建账号';
+        }
+      });
+
+      // ── 第三方注册 ──
+      document.querySelectorAll('.auth-social-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const label = (btn.getAttribute('aria-label') || '').toLowerCase();
+          try {
+            if (label === 'wechat' || label === '微信') {
+              alert('微信登录即将开放，敬请期待！');
+              return;
+            }
+            if (label === 'passkey' || label === '通行密钥') {
+              const { error } = await supabaseClient.auth.signInWithPasskey();
+              if (error) throw error;
+              return;
+            }
+            const provider = label === 'google' || label === '谷歌' ? 'google' : 'apple';
+            sessionStorage.setItem('redirectAfterLogin', '/zh-cn/');
+            const { error } = await supabaseClient.auth.signInWithOAuth({
+              provider,
+              options: { redirectTo: window.location.origin + '/zh-cn/' }
+            });
+            if (error) throw error;
+          } catch (err) {
+            alert(err.message);
+          }
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

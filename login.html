@@ -120,5 +120,62 @@
     <p>&copy; 2026 DKa1pha.</p>
   </footer>
   <script src="/assets/js/main.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/assets/js/auth.js"></script>
+  <script>
+    (function() {
+      'use strict';
+      const form = document.querySelector('.auth-form');
+      const submitBtn = form.querySelector('.auth-btn');
+      const emailInput = document.getElementById('email');
+      const passwordInput = document.getElementById('password');
+
+      // ── Email + password sign in ──
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
+        if (!email || !password) { alert('Please fill in all fields.'); return; }
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Signing in...';
+        try {
+          const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+          if (error) throw error;
+          window.location.href = '/';
+        } catch (err) {
+          alert(err.message);
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Sign In';
+        }
+      });
+
+      // ── Third-party sign in ──
+      document.querySelectorAll('.auth-social-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const label = (btn.getAttribute('aria-label') || '').toLowerCase();
+          try {
+            if (label === 'wechat' || label === '微信') {
+              alert('WeChat sign-in is coming soon. Stay tuned!');
+              return;
+            }
+            if (label === 'passkey' || label === '通行密钥') {
+              const { error } = await supabaseClient.auth.signInWithPasskey();
+              if (error) throw error;
+              return;
+            }
+            const provider = label === 'google' ? 'google' : 'apple';
+            sessionStorage.setItem('redirectAfterLogin', '/');
+            const { error } = await supabaseClient.auth.signInWithOAuth({
+              provider,
+              options: { redirectTo: window.location.origin }
+            });
+            if (error) throw error;
+          } catch (err) {
+            alert(err.message);
+          }
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

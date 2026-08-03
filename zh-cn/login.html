@@ -121,5 +121,62 @@
     <p>&copy; 2026 DKa1pha.</p>
   </footer>
   <script src="/assets/js/main.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/assets/js/auth.js"></script>
+  <script>
+    (function() {
+      'use strict';
+      const form = document.querySelector('.auth-form');
+      const submitBtn = form.querySelector('.auth-btn');
+      const emailInput = document.getElementById('email');
+      const passwordInput = document.getElementById('password');
+
+      // ── 邮箱密码登录 ──
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
+        if (!email || !password) { alert('请填写所有字段。'); return; }
+        submitBtn.disabled = true;
+        submitBtn.textContent = '登录中...';
+        try {
+          const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+          if (error) throw error;
+          window.location.href = '/zh-cn/';
+        } catch (err) {
+          alert(err.message);
+          submitBtn.disabled = false;
+          submitBtn.textContent = '登 录';
+        }
+      });
+
+      // ── 第三方登录 ──
+      document.querySelectorAll('.auth-social-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const label = (btn.getAttribute('aria-label') || '').toLowerCase();
+          try {
+            if (label === 'wechat' || label === '微信') {
+              alert('微信登录即将开放，敬请期待！');
+              return;
+            }
+            if (label === 'passkey' || label === '通行密钥') {
+              const { error } = await supabaseClient.auth.signInWithPasskey();
+              if (error) throw error;
+              return;
+            }
+            const provider = label === 'google' || label === '谷歌' ? 'google' : 'apple';
+            sessionStorage.setItem('redirectAfterLogin', '/zh-cn/');
+            const { error } = await supabaseClient.auth.signInWithOAuth({
+              provider,
+              options: { redirectTo: window.location.origin + '/zh-cn/' }
+            });
+            if (error) throw error;
+          } catch (err) {
+            alert(err.message);
+          }
+        });
+      });
+    })();
+  </script>
 </body>
 </html>
