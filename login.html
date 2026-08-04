@@ -293,8 +293,42 @@
               return;
             }
             if (label === 'passkey' || label === '通行密钥') {
-              const { error } = await supabaseClient.auth.signInWithPasskey();
-              if (error) throw error;
+              const pkBtn = btn;
+              pkBtn.disabled = true;
+              let settled = false;
+              // 1) 事件驱动：无论 signInWithPasskey 的 Promise 是否 resolve，
+              //    SIGNED_IN 事件一触发就跳转（解决 Safari 下 Promise 挂起无反应）
+              const { data: subData } = supabaseClient.auth.onAuthStateChange((event, session) => {
+                if (event === 'SIGNED_IN' && session && !settled) {
+                  settled = true;
+                  window.location.href = '/';
+                }
+              });
+              try {
+                const { error } = await supabaseClient.auth.signInWithPasskey();
+                if (error && !settled) throw error;
+                // 2) Promise 正常 resolve 时，再确认一次会话（双保险）
+                if (!settled) {
+                  const { data: sess } = await supabaseClient.auth.getSession();
+                  if (sess.session) {
+                    settled = true;
+                    window.location.href = '/';
+                    return;
+                  }
+                }
+              } catch (err) {
+                // 3) Promise 报错但会话可能已建立（刷新后已登录的场景）
+                const { data: sess } = await supabaseClient.auth.getSession();
+                if (sess.session && !settled) {
+                  settled = true;
+                  window.location.href = '/';
+                  return;
+                }
+                alert(err.message || 'Passkey sign-in failed. Please try again.');
+              } finally {
+                subData.subscription.unsubscribe();
+                pkBtn.disabled = false;
+              }
               return;
             }
             const provider = label === 'google' ? 'google' : 'facebook';
