@@ -1296,9 +1296,14 @@ footer {
 }
 
 .donate-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 14px;
+}
+
+.donate-grid .donate-card {
+  flex: 0 1 150px;
 }
 
 .donate-card {
@@ -1384,14 +1389,14 @@ footer {
 }
 
 @media (max-width: 480px) {
-  .donate-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
   .donate-card {
     padding: 18px 12px;
   }
   .donate-featured img {
     max-width: 180px;
+  }
+  .donate-grid .donate-card {
+    flex: 0 1 130px;
   }
 }
 
