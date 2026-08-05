@@ -197,4 +197,44 @@
       trailScheduled = false;
     });
   }, { passive: true });
+
+  // ─── QR Code Modal (WeChat / Alipay) ───
+  const qrTriggers = document.querySelectorAll('.qr-trigger');
+  const qrModal = document.getElementById('qr-modal');
+  const qrModalImg = document.getElementById('qr-modal-img');
+  const qrModalTitle = document.getElementById('qr-modal-title');
+  const qrModalDesc = document.getElementById('qr-modal-desc');
+  const qrModalClose = document.getElementById('qr-modal-close');
+
+  if (qrTriggers.length && qrModal && qrModalImg) {
+    qrTriggers.forEach(trigger => {
+      trigger.addEventListener('click', (e) => {
+        e.preventDefault();
+        const src = trigger.getAttribute('data-qr');
+        const title = trigger.getAttribute('data-qr-title') || '';
+        const desc = trigger.getAttribute('data-qr-desc') || '';
+        if (src) {
+          qrModalImg.src = src;
+          qrModalImg.alt = title;
+          if (qrModalTitle) qrModalTitle.textContent = title;
+          if (qrModalDesc) qrModalDesc.textContent = desc;
+          qrModal.classList.add('active');
+          document.body.style.overflow = 'hidden';
+        }
+      });
+    });
+
+    const closeQr = () => {
+      qrModal.classList.remove('active');
+      document.body.style.overflow = '';
+    };
+
+    if (qrModalClose) qrModalClose.addEventListener('click', closeQr);
+    qrModal.addEventListener('click', (e) => {
+      if (e.target === qrModal) closeQr();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && qrModal.classList.contains('active')) closeQr();
+    });
+  }
 })();
