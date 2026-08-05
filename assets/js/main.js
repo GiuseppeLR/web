@@ -145,12 +145,56 @@
 
     eggAvatars.forEach(avatar => {
       avatar.classList.add('egg-avatar');
-      avatar.addEventListener('click', (e) => {
+      // Desktop: trigger on hover; touch devices: trigger on tap
+      const canHover = window.matchMedia('(hover: hover)').matches;
+      const trigger = () => {
         if (eggLock) return;
         eggLock = true;
         const rect = avatar.getBoundingClientRect();
         burstAt(rect.left + rect.width / 2, rect.top + rect.height / 2, avatar);
-      });
+      };
+      if (canHover) avatar.addEventListener('mouseenter', trigger);
+      avatar.addEventListener('click', trigger);
     });
   }
+
+  // ─── Scroll trail effect (all platforms) ───
+  const TRAIL_COLORS = ['#2563eb', '#f59e0b', '#ec4899', '#06b6d4', '#a855f7', '#22c55e'];
+  let lastScrollY = window.scrollY;
+  let trailScheduled = false;
+
+  const spawnScrollTrail = (dir) => {
+    const count = window.innerWidth < 640 ? 3 : 5;
+    for (let i = 0; i < count; i++) {
+      const p = document.createElement('span');
+      p.className = 'scroll-trail';
+      const size = 4 + Math.random() * 6;
+      p.style.width = size + 'px';
+      p.style.height = size + 'px';
+      p.style.background = TRAIL_COLORS[Math.floor(Math.random() * TRAIL_COLORS.length)];
+      p.style.left = (Math.random() * window.innerWidth) + 'px';
+      p.style.top = (dir === 'down' ? -12 : window.innerHeight + 12) + 'px';
+      p.style.setProperty('--dx', (Math.random() * 100 - 50) + 'px');
+      p.style.setProperty('--dy', (dir === 'down' ? 1 : -1) * (80 + Math.random() * 120) + 'px');
+      p.style.animationDelay = (Math.random() * 0.12).toFixed(2) + 's';
+      document.body.appendChild(p);
+    }
+    setTimeout(() => {
+      document.querySelectorAll('.scroll-trail').forEach(n => n.remove());
+    }, 900);
+  };
+
+  window.addEventListener('scroll', () => {
+    if (trailScheduled) return;
+    trailScheduled = true;
+    requestAnimationFrame(() => {
+      const y = window.scrollY;
+      const delta = y - lastScrollY;
+      lastScrollY = y;
+      if (Math.abs(delta) > 3) {
+        spawnScrollTrail(delta > 0 ? 'down' : 'up');
+      }
+      trailScheduled = false;
+    });
+  }, { passive: true });
 })();
