@@ -1273,3 +1273,124 @@ footer {
   0%   { transform: translate(0, 0) scale(1); opacity: 0.85; }
   100% { transform: translate(var(--dx), var(--dy)) scale(0.15); opacity: 0; }
 }
+
+/* ── Donate / Support ── */
+.donate-section {
+  margin-top: 48px;
+  padding-top: 36px;
+  border-top: 1px solid var(--border);
+}
+
+.donate-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.donate-subtitle {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin-bottom: 24px;
+  line-height: 1.7;
+  max-width: 560px;
+}
+
+.donate-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 14px;
+}
+
+.donate-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 16px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  text-decoration: none;
+  color: var(--text);
+  transition: all 0.25s;
+}
+
+.donate-card:hover {
+  border-color: var(--accent);
+  box-shadow: var(--card-shadow-hover);
+  transform: translateY(-2px);
+}
+
+.donate-card:active {
+  transform: translateY(0);
+}
+
+.donate-icon {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.donate-icon svg {
+  width: 36px;
+  height: 36px;
+}
+
+.donate-name {
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.donate-featured {
+  margin-bottom: 28px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.donate-featured a {
+  display: inline-block;
+}
+
+.donate-featured img {
+  display: block;
+  max-width: 220px;
+  height: auto;
+  border-radius: var(--radius-sm);
+  transition: transform 0.2s;
+}
+
+.donate-featured img:hover {
+  transform: translateY(-2px);
+}
+
+/* Ko-fi widget button wrapper */
+.donate-featured > div {
+  display: flex;
+  align-items: center;
+}
+
+.donate-other-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 14px;
+  text-align: center;
+}
+
+@media (max-width: 480px) {
+  .donate-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .donate-card {
+    padding: 18px 12px;
+  }
+  .donate-featured img {
+    max-width: 180px;
+  }
+}
