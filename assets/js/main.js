@@ -81,7 +81,7 @@
   // ─── Easter egg: click avatar → starburst ───
   const eggAvatars = document.querySelectorAll('.hero-avatar, .nav-avatar');
   if (eggAvatars.length) {
-    const EGG_COLORS = ['#2563eb', '#f59e0b', '#ec4899', '#06b6d4', '#a855f7', '#22c55e'];
+    const EGG_COLORS = ['#1d4ed8', '#b45309', '#be185d', '#0e7490', '#7e22ce', '#15803d'];
     let eggLock = false;
 
     const burstAt = (cx, cy, avatar) => {
@@ -107,7 +107,7 @@
         const dist = 70 + Math.random() * 100;
         const p = document.createElement('span');
         p.className = 'egg-particle';
-        const size = 5 + Math.random() * 8;
+        const size = 8 + Math.random() * 10;
         p.style.width = size + 'px';
         p.style.height = size + 'px';
         p.style.borderRadius = '50%';
@@ -159,7 +159,7 @@
   }
 
   // ─── Scroll trail effect (all platforms) ───
-  const TRAIL_COLORS = ['#2563eb', '#f59e0b', '#ec4899', '#06b6d4', '#a855f7', '#22c55e'];
+  const TRAIL_COLORS = ['#1d4ed8', '#b45309', '#be185d', '#0e7490', '#7e22ce', '#15803d'];
   let lastScrollY = window.scrollY;
   let trailScheduled = false;
 
@@ -168,7 +168,7 @@
     for (let i = 0; i < count; i++) {
       const p = document.createElement('span');
       p.className = 'scroll-trail';
-      const size = 4 + Math.random() * 6;
+      const size = 6 + Math.random() * 8;
       p.style.width = size + 'px';
       p.style.height = size + 'px';
       p.style.background = TRAIL_COLORS[Math.floor(Math.random() * TRAIL_COLORS.length)];
