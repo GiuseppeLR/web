@@ -77,4 +77,80 @@
       input.type = show ? 'text' : 'password';
     });
   });
+
+  // ─── Easter egg: click avatar → starburst ───
+  const eggAvatars = document.querySelectorAll('.hero-avatar, .nav-avatar');
+  if (eggAvatars.length) {
+    const EGG_COLORS = ['#2563eb', '#f59e0b', '#ec4899', '#06b6d4', '#a855f7', '#22c55e'];
+    let eggLock = false;
+
+    const burstAt = (cx, cy, avatar) => {
+      // 1) Avatar bounce
+      avatar.classList.remove('egg-pop');
+      void avatar.offsetWidth; // restart animation
+      avatar.classList.add('egg-pop');
+
+      // 2) Expanding rings
+      for (let i = 0; i < 3; i++) {
+        const ring = document.createElement('span');
+        ring.className = 'egg-ring';
+        ring.style.left = cx + 'px';
+        ring.style.top = cy + 'px';
+        ring.style.animationDelay = (i * 0.12).toFixed(2) + 's';
+        document.body.appendChild(ring);
+      }
+
+      // 3) Colored particles
+      const count = window.innerWidth < 640 ? 14 : 22;
+      for (let i = 0; i < count; i++) {
+        const angle = (Math.PI * 2 * i) / count + Math.random() * 0.4;
+        const dist = 70 + Math.random() * 100;
+        const p = document.createElement('span');
+        p.className = 'egg-particle';
+        const size = 5 + Math.random() * 8;
+        p.style.width = size + 'px';
+        p.style.height = size + 'px';
+        p.style.borderRadius = '50%';
+        p.style.background = EGG_COLORS[i % EGG_COLORS.length];
+        p.style.left = cx + 'px';
+        p.style.top = cy + 'px';
+        p.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
+        p.style.setProperty('--dy', Math.sin(angle) * dist + 'px');
+        p.style.animationDelay = (Math.random() * 0.15).toFixed(2) + 's';
+        document.body.appendChild(p);
+      }
+
+      // 4) Twinkling stars (sparks)
+      for (let i = 0; i < 8; i++) {
+        const angle = (Math.PI * 2 * i) / 8 + Math.random() * 0.5;
+        const dist = 40 + Math.random() * 60;
+        const s = document.createElement('span');
+        s.className = 'egg-spark';
+        s.textContent = '\u2726';
+        s.style.left = cx + 'px';
+        s.style.top = cy + 'px';
+        s.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
+        s.style.setProperty('--dy', Math.sin(angle) * dist + 'px');
+        s.style.animationDelay = (Math.random() * 0.2).toFixed(2) + 's';
+        document.body.appendChild(s);
+      }
+
+      // Cleanup
+      setTimeout(() => {
+        avatar.classList.remove('egg-pop');
+        document.querySelectorAll('.egg-ring, .egg-particle, .egg-spark').forEach(n => n.remove());
+        eggLock = false;
+      }, 1200);
+    };
+
+    eggAvatars.forEach(avatar => {
+      avatar.classList.add('egg-avatar');
+      avatar.addEventListener('click', (e) => {
+        if (eggLock) return;
+        eggLock = true;
+        const rect = avatar.getBoundingClientRect();
+        burstAt(rect.left + rect.width / 2, rect.top + rect.height / 2, avatar);
+      });
+    });
+  }
 })();

@@ -1198,3 +1198,63 @@ footer {
   margin-top: 8px;
   line-height: 1.5;
 }
+
+/* ══ Easter egg: avatar starburst ══ */
+.egg-avatar {
+  cursor: pointer;
+}
+
+.egg-pop {
+  animation: eggPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes eggPop {
+  0%   { transform: scale(1) rotate(0deg); }
+  30%  { transform: scale(1.4) rotate(-10deg); }
+  60%  { transform: scale(0.9) rotate(8deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+.egg-ring {
+  position: fixed;
+  width: 26px;
+  height: 26px;
+  margin-left: -13px;
+  margin-top: -13px;
+  border-radius: 50%;
+  border: 3px solid var(--accent);
+  pointer-events: none;
+  z-index: 9999;
+  animation: eggRing 0.8s ease-out forwards;
+}
+
+@keyframes eggRing {
+  0%   { transform: scale(0.3); opacity: 0.9; }
+  100% { transform: scale(7); opacity: 0; }
+}
+
+.egg-particle {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  animation: eggParticle 1s cubic-bezier(0.2, 0.6, 0.4, 1) forwards;
+}
+
+@keyframes eggParticle {
+  0%   { transform: translate(0, 0) scale(1); opacity: 1; }
+  100% { transform: translate(var(--dx), var(--dy)) scale(0.1); opacity: 0; }
+}
+
+.egg-spark {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  color: #fbbf24;
+  font-size: 16px;
+  animation: eggSpark 1s ease-out forwards;
+}
+
+@keyframes eggSpark {
+  0%   { transform: translate(0, 0) rotate(0deg) scale(1); opacity: 1; }
+  100% { transform: translate(var(--dx), var(--dy)) rotate(220deg) scale(0.2); opacity: 0; }
+}
