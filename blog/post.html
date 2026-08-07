@@ -81,6 +81,7 @@
           .from('blog_posts')
           .select('*')
           .eq('slug', slug)
+          .eq('lang', 'en')
           .eq('published', true)
           .single();
 
