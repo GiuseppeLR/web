@@ -7,7 +7,8 @@
   <meta name="description" content="博客文章">
   <title>博客 - DK Blog Place</title>
   <link rel="icon" href="/assets/img/avatar.jpg" type="image/jpeg">
-  <link rel="stylesheet" href="/assets/css/style.css?v=4">
+  <link rel="stylesheet" href="/assets/css/style.css?v=5">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
   <nav>
@@ -26,7 +27,7 @@
         <a href="/zh-cn/login.html">登录</a>
       </div>
       <div class="nav-controls">
-        <button class="nav-btn lang-btn" onclick="window.location.href='/'">EN</button>
+        <button class="nav-btn lang-btn" onclick="window.location.href='/blog/'">EN</button>
         <button class="nav-btn" id="theme-toggle">☀</button>
         <button class="hamburger" id="hamburger">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
@@ -36,29 +37,88 @@
   </nav>
   <main>
     <div class="container">
-      <section class="section">
-        <h1>博客文章</h1>
-        <h2>文章列表</h2>
-        <div class="blog-card">
-          <a href="/zh-cn/blog/njtech-timetable/" class="blog-card-link">
-            <h3>南工课程表 NJTech Timetable</h3>
-            <p class="blog-card-meta">Jul 29, 2026 &middot; <span class="tag">Flutter</span> <span class="tag">Mobile</span></p>
-            <p class="blog-card-excerpt">一款面向南京工业大学学生的课程表管理工具，使用 Flutter 构建。</p>
-          </a>
-        </div>
-        <div class="blog-card">
-          <a href="/zh-cn/blog/pdfreader/" class="blog-card-link">
-            <h3>PDF Reader for macOS</h3>
-            <p class="blog-card-meta">Jul 29, 2026 &middot; <span class="tag">Swift</span> <span class="tag">macOS</span> <span class="tag">SwiftUI</span></p>
-            <p class="blog-card-excerpt">一个功能丰富的 macOS 原生 PDF 阅读器，使用 SwiftUI + PDFKit 构建。支持标注、书签、搜索、合并、提取、签名等功能。</p>
-          </a>
-        </div>
-      </section>
+      <h1 class="page-title">博客文章</h1>
+      <div id="blog-loading" class="loading">
+        <div class="spinner"></div>
+        <p>加载文章中...</p>
+      </div>
+      <section class="blog-cards" id="blog-cards" style="display: none;"></section>
+      <div id="blog-empty" class="empty-state" style="display: none;">暂无文章，敬请期待！</div>
+      <div id="blog-error" class="error-state" style="display: none;">加载文章失败，请稍后重试。</div>
     </div>
   </main>
   <footer>
     <p>&copy; 2026 DKa1pha.</p>
   </footer>
-  <script src="/assets/js/main.js?v=4"></script>
+  <script src="/assets/js/auth.js"></script>
+  <script src="/assets/js/main.js?v=5"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const loading = document.getElementById('blog-loading');
+      const cardsContainer = document.getElementById('blog-cards');
+      const empty = document.getElementById('blog-empty');
+      const errorEl = document.getElementById('blog-error');
+
+      try {
+        const { data, error } = await supabaseClient
+          .from('blog_posts')
+          .select('id, title, slug, excerpt, tags, published_at, created_at')
+          .eq('published', true)
+          .eq('lang', 'zh-cn')
+          .order('published_at', { ascending: false });
+
+        if (error) throw error;
+
+        loading.style.display = 'none';
+
+        if (!data || data.length === 0) {
+          empty.style.display = 'block';
+          return;
+        }
+
+        cardsContainer.style.display = 'flex';
+        cardsContainer.innerHTML = data.map(post => {
+          const date = post.published_at || post.created_at;
+          const tagsHtml = (post.tags || [])
+            .map(t => `<span class="tag">${escapeHtml(t)}</span>`)
+            .join('');
+          return `
+            <article class="blog-card">
+              <div class="card-body">
+                <h3 class="card-title">
+                  <a href="/zh-cn/blog/post.html?slug=${encodeURIComponent(post.slug)}">${escapeHtml(post.title)}</a>
+                </h3>
+                <p class="card-date">${formatDate(date)}</p>
+                <div class="card-tags">${tagsHtml}</div>
+                <p class="card-excerpt">${escapeHtml(post.excerpt || '')}</p>
+                <a href="/zh-cn/blog/post.html?slug=${encodeURIComponent(post.slug)}" class="card-link">阅读全文 &rarr;</a>
+              </div>
+            </article>
+          `;
+        }).join('');
+      } catch (err) {
+        console.error('加载博客文章失败:', err);
+        loading.style.display = 'none';
+        errorEl.style.display = 'block';
+      }
+    });
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '';
+      return new Date(dateStr).toLocaleDateString('zh-CN', {
+        year: 'numeric', month: 'long', day: 'numeric'
+      });
+    }
+  </script>
 </body>
 </html>

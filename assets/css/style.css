@@ -799,6 +799,51 @@ footer {
   color: var(--text-secondary);
   font-style: italic;
 }
+.post-content img { max-width: 100%; border-radius: var(--radius-sm); margin-bottom: 16px; }
+.post-content table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+.post-content th, .post-content td { border: 1px solid var(--border); padding: 8px 12px; text-align: left; }
+.post-content th { background: var(--code-bg); font-weight: 600; }
+
+/* ── Loading & state indicators ── */
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 16px;
+  color: var(--text-secondary);
+}
+.loading p { margin-top: 12px; font-size: 14px; }
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.empty-state {
+  text-align: center;
+  padding: 48px 16px;
+  color: var(--text-secondary);
+  font-size: 15px;
+}
+.error-state {
+  text-align: center;
+  padding: 48px 16px;
+  color: #ef4444;
+  font-size: 15px;
+}
+.post-back {
+  display: inline-block;
+  margin-bottom: 24px;
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+}
+.post-back:hover { text-decoration: underline; }
 
 /* ── Auth (Login / Register / Forgot) ── */
 .auth-page {

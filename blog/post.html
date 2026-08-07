@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Loading... - DK Blog Place</title>
+  <link rel="icon" href="/assets/img/avatar.jpg" type="image/jpeg">
+  <link rel="stylesheet" href="/assets/css/style.css?v=5">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+  <nav>
+    <div class="nav-inner">
+      <div class="nav-left">
+        <img src="/assets/img/avatar.jpg" alt="DK" class="nav-avatar">
+        <a href="/" class="nav-title">DK Blog Place</a>
+      </div>
+      <div class="nav-links" id="nav-links">
+        <a href="/">Home</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about.html">About</a>
+        <a href="/guestbook.html">Guestbook</a>
+        <a href="/contact.html">Contact</a>
+        <a href="/search.html">Search</a>
+        <a href="/login.html">Login</a>
+      </div>
+      <div class="nav-controls">
+        <button class="nav-btn lang-btn" onclick="window.location.href='/zh-cn/blog/'">中</button>
+        <button class="nav-btn" id="theme-toggle">☀</button>
+        <button class="hamburger" id="hamburger">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+  <main>
+    <div class="container">
+      <div id="post-loading" class="loading">
+        <div class="spinner"></div>
+        <p>Loading post...</p>
+      </div>
+      <div id="post-not-found" class="empty-state" style="display: none;">
+        <p>Post not found.</p>
+        <p><a href="/blog/" class="post-back">&larr; Back to Blog</a></p>
+      </div>
+      <article id="post-article" class="post" style="display: none;">
+        <a href="/blog/" class="post-back">&larr; Back to Blog</a>
+        <header class="post-header">
+          <h1 class="post-title" id="article-title"></h1>
+          <p class="post-date" id="article-date"></p>
+          <div class="post-tags" id="article-tags"></div>
+        </header>
+        <div class="post-content" id="article-content"></div>
+      </article>
+    </div>
+  </main>
+  <footer>
+    <p>&copy; 2026 DKa1pha.</p>
+  </footer>
+  <script src="/assets/js/auth.js"></script>
+  <script src="/assets/js/main.js?v=5"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const loading = document.getElementById('post-loading');
+      const notFound = document.getElementById('post-not-found');
+      const article = document.getElementById('post-article');
+
+      const params = new URLSearchParams(window.location.search);
+      const slug = params.get('slug');
+
+      if (!slug) {
+        loading.style.display = 'none';
+        notFound.style.display = 'block';
+        return;
+      }
+
+      try {
+        const { data: post, error } = await supabaseClient
+          .from('blog_posts')
+          .select('*')
+          .eq('slug', slug)
+          .eq('published', true)
+          .single();
+
+        if (error || !post) {
+          throw new Error('Post not found');
+        }
+
+        // Update page title
+        document.title = `${post.title} - DK Blog Place`;
+
+        // Populate header
+        document.getElementById('article-title').textContent = post.title;
+        const date = post.published_at || post.created_at;
+        document.getElementById('article-date').textContent = date
+          ? new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+          : '';
+
+        // Render tags
+        const tagsEl = document.getElementById('article-tags');
+        tagsEl.innerHTML = (post.tags || [])
+          .map(t => `<span class="tag">${escapeHtml(t)}</span>`)
+          .join('');
+
+        // Render Markdown content
+        const contentEl = document.getElementById('article-content');
+        contentEl.innerHTML = marked.parse(post.content || '');
+
+        // Show article
+        loading.style.display = 'none';
+        article.style.display = 'block';
+      } catch (err) {
+        console.error('Error loading post:', err);
+        loading.style.display = 'none';
+        notFound.style.display = 'block';
+      }
+    });
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+  </script>
+</body>
+</html>
