@@ -997,6 +997,16 @@ footer {
 .auth-btn:hover { background: var(--accent-hover); }
 .auth-btn:active { transform: translateY(1px); }
 
+/* Turnstile 人机验证 */
+.turnstile-wrap {
+  margin: 14px 0 4px;
+  display: flex;
+  justify-content: center;
+}
+.turnstile-wrap iframe {
+  border-radius: var(--radius-sm);
+}
+
 .auth-divider {
   display: flex;
   align-items: center;

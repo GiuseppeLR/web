@@ -7,7 +7,8 @@
   <meta name="description" content="登录 DK Blog Place">
   <title>登录 - DK Blog Place</title>
   <link rel="icon" href="/assets/img/avatar.jpg" type="image/jpeg">
-  <link rel="stylesheet" href="/assets/css/style.css?v=4">
+  <link rel="stylesheet" href="/assets/css/style.css?v=5">
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body>
   <nav>
@@ -73,6 +74,9 @@
                   <button type="button" class="otp-send-btn" id="otp-send">获取验证码</button>
                 </div>
               </div>
+              <div class="turnstile-wrap">
+                <div class="cf-turnstile" data-size="normal"></div>
+              </div>
               <button type="submit" class="auth-btn">验证并登录</button>
             </form>
           </div>
@@ -106,6 +110,9 @@
               <div class="auth-row">
                 <label class="auth-check"><input type="checkbox"> 记住我</label>
                 <a href="/zh-cn/forgot-password.html" class="auth-link">忘记密码？</a>
+              </div>
+              <div class="turnstile-wrap">
+                <div class="cf-turnstile" data-size="normal"></div>
               </div>
               <button type="submit" class="auth-btn">登 录</button>
             </form>
@@ -158,6 +165,12 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="/assets/js/auth.js"></script>
   <script src="/assets/js/auth-phone.js"></script>
+  <script>
+    // Turnstile 站点密钥（替换为你自己的密钥）
+    // 在 Cloudflare Dashboard → Turnstile 中创建
+    window.TURNSTILE_SITE_KEY = '';
+  </script>
+  <script src="/assets/js/turnstile.js"></script>
   <script>
     (function() {
       'use strict';
@@ -224,6 +237,9 @@
       otpSendBtn.addEventListener('click', async () => {
         const phone = phoneCode.value + phoneNumber.value.trim();
         if (!phoneNumber.value.trim()) { alert('请输入手机号码。'); return; }
+        // Turnstile 人机验证
+        const tsOk = await verifyTurnstile(phoneForm);
+        if (!tsOk) return;
         otpSendBtn.disabled = true;
         try {
           const { error } = await supabaseClient.auth.signInWithOtp({ phone });
@@ -243,6 +259,9 @@
         const code = otpCode.value.trim();
         if (!code || code.length !== 6) { alert('请输入 6 位验证码。'); return; }
         if (!pendingPhone) { alert('请先获取验证码。'); return; }
+        // Turnstile 人机验证
+        const tsOk = await verifyTurnstile(phoneForm);
+        if (!tsOk) return;
         phoneSubmitBtn.disabled = true;
         phoneSubmitBtn.textContent = '验证中...';
         try {
@@ -268,6 +287,9 @@
         const email = document.getElementById('email').value.trim();
         const password = document.getElementById('password').value;
         if (!email || !password) { alert('请填写所有字段。'); return; }
+        // Turnstile 人机验证
+        const tsOk = await verifyTurnstile(emailForm);
+        if (!tsOk) return;
         emailSubmitBtn.disabled = true;
         emailSubmitBtn.textContent = '登录中...';
         try {

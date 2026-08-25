@@ -7,7 +7,8 @@
   <meta name="description" content="Create an account on DK Blog Place">
   <title>Sign Up - DK Blog Place</title>
   <link rel="icon" href="/assets/img/avatar.jpg" type="image/jpeg">
-  <link rel="stylesheet" href="/assets/css/style.css?v=4">
+  <link rel="stylesheet" href="/assets/css/style.css?v=5">
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body>
   <nav>
@@ -83,6 +84,9 @@
                 </div>
                 <p class="phone-hint">A verification code will be sent to your phone. Verifying auto-creates your account and signs you in.</p>
               </div>
+              <div class="turnstile-wrap">
+                <div class="cf-turnstile" data-size="normal"></div>
+              </div>
               <button type="submit" class="auth-btn" id="phone-submit">Get Code &amp; Register</button>
             </form>
           </div>
@@ -136,6 +140,9 @@
                   </button>
                 </div>
               </div>
+              <div class="turnstile-wrap">
+                <div class="cf-turnstile" data-size="normal"></div>
+              </div>
               <button type="submit" class="auth-btn">Create Account</button>
             </form>
           </div>
@@ -178,6 +185,12 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="/assets/js/auth.js"></script>
   <script src="/assets/js/auth-phone.js"></script>
+  <script>
+    // Turnstile 站点密钥（替换为你自己的密钥）
+    // 在 Cloudflare Dashboard → Turnstile 中创建
+    window.TURNSTILE_SITE_KEY = '';
+  </script>
+  <script src="/assets/js/turnstile.js"></script>
   <script>
     (function() {
       'use strict';
@@ -241,6 +254,9 @@
       otpSendBtn.addEventListener('click', async () => {
         const phone = phoneCode.value + phoneNumber.value.trim();
         if (!phoneNumber.value.trim()) { alert('Please enter your phone number.'); return; }
+        // Turnstile 人机验证
+        const tsOk = await verifyTurnstile(phoneForm);
+        if (!tsOk) return;
         otpSendBtn.disabled = true;
         try {
           const { error } = await supabaseClient.auth.signInWithOtp({ phone });
@@ -261,6 +277,9 @@
         const code = otpCode.value.trim();
         if (!code || code.length !== 6) { alert('Please enter the 6-digit code.'); return; }
         if (!pendingPhone) { alert('Please request a code first.'); return; }
+        // Turnstile 人机验证
+        const tsOk = await verifyTurnstile(phoneForm);
+        if (!tsOk) return;
         phoneSubmitBtn.disabled = true;
         phoneSubmitBtn.textContent = 'Verifying...';
         try {
@@ -294,6 +313,10 @@
 
         if (password.length < 8) { alert('Password must be at least 8 characters.'); return; }
         if (password !== confirm) { alert('Passwords do not match.'); return; }
+
+        // Turnstile 人机验证
+        const tsOk = await verifyTurnstile(emailForm);
+        if (!tsOk) return;
 
         emailSubmitBtn.disabled = true;
         emailSubmitBtn.textContent = 'Creating account...';
