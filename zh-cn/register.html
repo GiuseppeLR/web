@@ -183,7 +183,7 @@
   </footer>
   <script src="/assets/js/main.js?v=4"></script>
   <script src="/assets/js/supabase.min.js"></script>
-  <script src="/assets/js/auth.js"></script>
+  <script src="/assets/js/auth.js?v=2"></script>
   <script src="/assets/js/auth-phone.js"></script>
   <script>
     // Turnstile 站点密钥（替换为你自己的密钥）
@@ -354,7 +354,7 @@
               sessionStorage.setItem('redirectAfterLogin', '/zh-cn/');
               const { error } = await supabaseClient.auth.signInWithOAuth({
                 provider: 'github',
-                options: { redirectTo: window.location.origin + '/zh-cn/' }
+                options: { redirectTo: window.location.href.split('#')[0] }
               });
               if (error) throw error;
               return;
@@ -363,7 +363,7 @@
             sessionStorage.setItem('redirectAfterLogin', '/zh-cn/');
             const { error } = await supabaseClient.auth.signInWithOAuth({
               provider,
-              options: { redirectTo: window.location.origin + '/zh-cn/' }
+              options: { redirectTo: window.location.href.split('#')[0] }
             });
             if (error) throw error;
           } catch (err) {

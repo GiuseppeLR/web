@@ -12,18 +12,26 @@
     }
   });
 
-  // Handle OAuth redirect callback: after Google/Apple sign-in, browser
-  // returns to this page with ?code=... in the URL. supabase-js auto
-  // exchanges it; we land with an active session. Only redirect in that case.
-  const hasOAuthCode = new URLSearchParams(window.location.search).has('code');
+  // Handle OAuth redirect callback
+  // Supabase OAuth returns tokens in URL hash (#access_token=...), not in query
+  // getSession() auto-parses the hash and restores the session
+  const hasOAuthCode =
+    new URLSearchParams(window.location.search).has('code') ||
+    window.location.hash.includes('access_token=');
+
   supabaseClient.auth.getSession().then(({ data }) => {
-    if (data.session && hasOAuthCode) {
-      const redirectTo = sessionStorage.getItem('redirectAfterLogin') || '/';
-      sessionStorage.removeItem('redirectAfterLogin');
+    if (data.session && data.session.user && hasOAuthCode) {
+      // Clean up the URL hash (remove tokens from address bar)
+      if (window.location.hash) {
+        history.replaceState(null, '', window.location.pathname + window.location.search);
+      }
+      // If we're on an auth page, redirect to home
       const path = window.location.pathname;
       const isAuthPage =
         path.includes('/login') || path.includes('/register') || path.includes('/forgot-password');
-      if (isAuthPage && data.session.user) {
+      if (isAuthPage) {
+        const redirectTo = sessionStorage.getItem('redirectAfterLogin') || '/';
+        sessionStorage.removeItem('redirectAfterLogin');
         window.location.href = redirectTo;
       }
     }
