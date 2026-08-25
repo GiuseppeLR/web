@@ -1,0 +1,24 @@
+name: Keep Supabase Alive
+
+on:
+  schedule:
+    # 每天 UTC 时间 3:00 执行（北京时间 11:00）
+    - cron: "0 3 * * *"
+  # 支持在 GitHub 界面手动触发测试
+  workflow_dispatch: 
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase Database
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          # 调用 Supabase REST API 执行一个简单查询，保持项目活跃
+          curl -s -o /dev/null -w "HTTP Status: %{http_code}\n" \
+          -H "apikey: ${SUPABASE_ANON_KEY}" \
+          -H "Authorization: Bearer ${SUPABASE_ANON_KEY}" \
+          "${SUPABASE_URL}/rest/v1/?limit=1"
+          echo "Ping completed at $(date -u)"
