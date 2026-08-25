@@ -354,7 +354,10 @@
               sessionStorage.setItem('redirectAfterLogin', '/zh-cn/');
               const { error } = await supabaseClient.auth.signInWithOAuth({
                 provider: 'github',
-                options: { redirectTo: window.location.href.split('#')[0] }
+                options: {
+                  redirectTo: window.location.href.split('#')[0],
+                  queryParams: { prompt: 'consent' }
+                }
               });
               if (error) throw error;
               return;
