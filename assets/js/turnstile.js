@@ -9,7 +9,7 @@
 
   // Turnstile 站点密钥（在 Cloudflare Dashboard → Turnstile 中获取）
   // 测试用密钥（总是通过）：1x00000000000000000000AA
-  const TURNSTILE_SITE_KEY = window.TURNSTILE_SITE_KEY || '';
+  const TURNSTILE_SITE_KEY = window.TURNSTILE_SITE_KEY || '0x4AAAAAAEbzQQ7HcgSD19SP';
 
   // 后端验证接口地址
   const TURNSTILE_VERIFY_URL = window.TURNSTILE_VERIFY_URL || 'https://admin.dka1pha.cc/api/turnstile/verify';
