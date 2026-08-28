@@ -9,17 +9,17 @@
 
   const lang = window.location.pathname.startsWith('/zh-cn') ? 'zh' : 'en';
 
-  // Search index
-  const posts = [
+  // Static fallback posts (used if Supabase fails)
+  const staticPosts = [
     {
       title: 'NJTech Timetable',
-      titleZh: '\u5357\u5DE5\u8BFE\u7A0B\u8868',
+      titleZh: '南工课程表',
       date: 'Jul 29, 2026',
       tags: ['Flutter', 'Mobile'],
       url: '/blog/njtech-timetable/',
       urlZh: '/zh-cn/blog/njtech-timetable/',
       excerpt: 'A course schedule management tool for Nanjing Tech University students built with Flutter.',
-      excerptZh: '\u4E00\u6B3E\u9762\u5411\u5357\u4EAC\u5DE5\u4E1A\u5927\u5B66\u5B66\u751F\u7684\u8BFE\u7A0B\u8868\u7BA1\u7406\u5DE5\u5177\uFF0C\u4F7F\u7528 Flutter \u6784\u5EFA\u3002'
+      excerptZh: '一款面向南京工业大学学生的课程表管理工具，使用 Flutter 构建。'
     },
     {
       title: 'PDF Reader for macOS',
@@ -29,46 +29,95 @@
       url: '/blog/pdfreader/',
       urlZh: '/zh-cn/blog/pdfreader/',
       excerpt: 'A feature-rich native macOS PDF reader built with SwiftUI & PDFKit.',
-      excerptZh: '\u4E00\u4E2A\u529F\u80FD\u4E30\u5BCC\u7684 macOS \u539F\u751F PDF \u9605\u8BFB\u5668\uFF0C\u4F7F\u7528 SwiftUI + PDFKit \u6784\u5EFA\u3002'
+      excerptZh: '一个功能丰富的 macOS 原生 PDF 阅读器，使用 SwiftUI + PDFKit 构建。'
     }
   ];
 
-  function getEmptyState() {
-    const icon = `
-      <svg class="search-empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="11" cy="11" r="8"/>
-        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-        <line x1="8" y1="11" x2="14" y2="11"/>
-      </svg>`;
+  let posts = staticPosts;
+  let loaded = false;
+
+  function formatDate(dateStr) {
+    if (!dateStr) return '';
+    var d = new Date(dateStr);
     if (lang === 'zh') {
-      return icon +
-        '<div class="search-empty-text">\u8F93\u5165\u5173\u952E\u8BCD\u641C\u7D22\u535A\u5BA2\u6587\u7AE0</div>' +
-        '<div class="search-empty-hint">\u53EF\u4EE5\u641C\u7D22\u6587\u7AE0\u6807\u9898\u3001\u6458\u8981\u548C\u6807\u7B7E</div>';
+      return d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日';
     }
-    return icon +
-      '<div class="search-empty-text">Type to search blog posts</div>' +
-      '<div class="search-empty-hint">Search by title, excerpt, or tags</div>';
+    return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+  }
+
+  async function loadPosts() {
+    if (!window.supabaseClient) {
+      loaded = true;
+      renderResults(searchBox.value);
+      return;
+    }
+
+    try {
+      var dbLang = lang === 'zh' ? 'zh' : 'en';
+      var { data, error } = await window.supabaseClient
+        .from('blog_posts')
+        .select('id, title, slug, excerpt, tags, published_at, created_at')
+        .eq('published', true)
+        .eq('lang', dbLang)
+        .order('published_at', { ascending: false });
+
+      if (error) throw error;
+
+      if (data && data.length > 0) {
+        posts = data.map(function(p) {
+          var baseUrl = lang === 'zh' ? '/zh-cn/blog/post.html' : '/blog/post.html';
+          var url = baseUrl + '?slug=' + encodeURIComponent(p.slug);
+          var dateStr = formatDate(p.published_at || p.created_at);
+          return {
+            title: p.title,
+            titleZh: p.title,
+            date: dateStr,
+            tags: p.tags || [],
+            url: url,
+            urlZh: url,
+            excerpt: p.excerpt || '',
+            excerptZh: p.excerpt || ''
+          };
+        });
+      }
+    } catch (err) {
+      console.error('Search: failed to load posts from Supabase, using static fallback', err);
+    }
+
+    loaded = true;
+    renderResults(searchBox.value);
+  }
+
+  function getEmptyState() {
+    var icon = '<svg class="search-empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>';
+    if (lang === 'zh') {
+      return icon + '<div class="search-empty-text">输入关键词搜索博客文章</div><div class="search-empty-hint">可以搜索文章标题、摘要和标签</div>';
+    }
+    return icon + '<div class="search-empty-text">Type to search blog posts</div><div class="search-empty-hint">Search by title, excerpt, or tags</div>';
   }
 
   function getNoResultsState() {
-    const icon = `
-      <svg class="search-empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="11" cy="11" r="8"/>
-        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-        <line x1="8" y1="11" x2="14" y2="11"/>
-      </svg>`;
+    var icon = '<svg class="search-empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>';
     if (lang === 'zh') {
-      return icon +
-        '<div class="search-empty-text">\u6CA1\u6709\u627E\u5230\u76F8\u5173\u6587\u7AE0</div>' +
-        '<div class="search-empty-hint">\u8BF7\u5C1D\u8BD5\u5176\u4ED6\u5173\u952E\u8BCD</div>';
+      return icon + '<div class="search-empty-text">没有找到相关文章</div><div class="search-empty-hint">请尝试其他关键词</div>';
     }
-    return icon +
-      '<div class="search-empty-text">No results found</div>' +
-      '<div class="search-empty-hint">Try different keywords</div>';
+    return icon + '<div class="search-empty-text">No results found</div><div class="search-empty-hint">Try different keywords</div>';
+  }
+
+  function getLoadingState() {
+    if (lang === 'zh') {
+      return '<div class="search-loading"><div class="spinner"></div><p>正在加载文章...</p></div>';
+    }
+    return '<div class="search-loading"><div class="spinner"></div><p>Loading posts...</p></div>';
   }
 
   function renderResults(query) {
-    const q = query.toLowerCase().trim();
+    var q = query.toLowerCase().trim();
+
+    if (!loaded) {
+      resultsContainer.innerHTML = '<div class="search-empty">' + getLoadingState() + '</div>';
+      return;
+    }
 
     if (!q) {
       resultsContainer.innerHTML = '<div class="search-empty">' + getEmptyState() + '</div>';
@@ -78,10 +127,10 @@
 
     if (clearBtn) clearBtn.style.display = 'block';
 
-    const matched = posts.filter(p => {
-      const title = lang === 'zh' ? p.titleZh.toLowerCase() : p.title.toLowerCase();
-      const excerpt = lang === 'zh' ? p.excerptZh.toLowerCase() : p.excerpt.toLowerCase();
-      const tags = p.tags.join(' ').toLowerCase();
+    var matched = posts.filter(function(p) {
+      var title = (lang === 'zh' ? p.titleZh : p.title).toLowerCase();
+      var excerpt = (lang === 'zh' ? p.excerptZh : p.excerpt).toLowerCase();
+      var tags = p.tags.join(' ').toLowerCase();
       return title.includes(q) || excerpt.includes(q) || tags.includes(q);
     });
 
@@ -90,10 +139,10 @@
       return;
     }
 
-    resultsContainer.innerHTML = matched.map(p => {
-      const url = lang === 'zh' ? p.urlZh : p.url;
-      const title = lang === 'zh' ? p.titleZh : p.title;
-      const excerpt = lang === 'zh' ? p.excerptZh : p.excerpt;
+    resultsContainer.innerHTML = matched.map(function(p) {
+      var url = lang === 'zh' ? p.urlZh : p.url;
+      var title = lang === 'zh' ? p.titleZh : p.title;
+      var excerpt = lang === 'zh' ? p.excerptZh : p.excerpt;
       return '<a href="' + url + '" class="search-result-item">' +
         '<h3>' + title + '</h3>' +
         '<div class="meta">' + p.date + ' \u00B7 ' +
@@ -116,6 +165,7 @@
     });
   }
 
-  // Initial render
+  // Initial render (shows loading, then loads from Supabase)
   renderResults('');
+  loadPosts();
 })();

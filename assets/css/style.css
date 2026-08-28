@@ -805,7 +805,8 @@ footer {
 .post-content th { background: var(--code-bg); font-weight: 600; }
 
 /* ── Loading & state indicators ── */
-.loading {
+.loading,
+.search-loading {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -813,7 +814,7 @@ footer {
   padding: 48px 16px;
   color: var(--text-secondary);
 }
-.loading p { margin-top: 12px; font-size: 14px; }
+.loading p, .search-loading p { margin-top: 12px; font-size: 14px; }
 .spinner {
   width: 32px;
   height: 32px;
