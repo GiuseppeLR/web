@@ -51,26 +51,68 @@
       </section>
       <section class="section">
         <h2>最新文章</h2>
-        <div class="blog-card">
-          <a href="/zh-cn/blog/njtech-timetable/" class="blog-card-link">
-            <h3>南工课程表 NJTech Timetable</h3>
-            <p class="blog-card-meta">Jul 29, 2026 &middot; <span class="tag">Flutter</span> <span class="tag">Mobile</span></p>
-            <p class="blog-card-excerpt">一款面向南京工业大学学生的课程表管理工具，使用 Flutter 构建。</p>
-          </a>
+        <div id="home-loading" class="loading">
+          <div class="spinner"></div>
+          <p>正在加载文章...</p>
         </div>
-        <div class="blog-card">
-          <a href="/zh-cn/blog/pdfreader/" class="blog-card-link">
-            <h3>PDF Reader for macOS</h3>
-            <p class="blog-card-meta">Jul 29, 2026 &middot; <span class="tag">Swift</span> <span class="tag">macOS</span> <span class="tag">SwiftUI</span></p>
-            <p class="blog-card-excerpt">一个功能丰富的 macOS 原生 PDF 阅读器，使用 SwiftUI + PDFKit 构建。支持标注、书签、搜索、合并、提取、签名等功能。</p>
-          </a>
-        </div>
+        <div id="home-posts" style="display: none;"></div>
       </section>
     </div>
   </main>
   <footer>
     <p>&copy; 2026 DKa1pha. <a href="/zh-cn/privacy.html" style="color: var(--text-secondary);">隐私政策</a></p>
   </footer>
+  <script src="/assets/js/supabase.min.js"></script>
+  <script src="/assets/js/auth.js?v=2"></script>
   <script src="/assets/js/main.js?v=4"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const loading = document.getElementById('home-loading');
+      const container = document.getElementById('home-posts');
+
+      function escapeHtml(str) {
+        if (!str) return '';
+        return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+      }
+      function formatDate(dateStr) {
+        if (!dateStr) return '';
+        var d = new Date(dateStr);
+        return d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日';
+      }
+
+      try {
+        const { data, error } = await supabaseClient
+          .from('blog_posts')
+          .select('id, title, slug, excerpt, tags, published_at, created_at')
+          .eq('published', true)
+          .eq('lang', 'zh')
+          .order('published_at', { ascending: false })
+          .limit(2);
+
+        if (error) throw error;
+
+        if (!data || data.length === 0) {
+          loading.innerHTML = '<p>暂无文章，敬请期待！</p>';
+          return;
+        }
+
+        loading.style.display = 'none';
+        container.style.display = 'block';
+        container.innerHTML = data.map(post => {
+          const date = post.published_at || post.created_at;
+          const tagsHtml = (post.tags || []).map(t => '<span class="tag">' + escapeHtml(t) + '</span>').join('');
+          const url = '/zh-cn/blog/post.html?slug=' + encodeURIComponent(post.slug);
+          return '<div class="blog-card"><a href="' + url + '" class="blog-card-link">' +
+            '<h3>' + escapeHtml(post.title) + '</h3>' +
+            '<p class="blog-card-meta">' + formatDate(date) + ' &middot; ' + tagsHtml + '</p>' +
+            '<p class="blog-card-excerpt">' + escapeHtml(post.excerpt || '') + '</p>' +
+          '</a></div>';
+        }).join('');
+      } catch (err) {
+        console.error('Failed to load latest posts:', err);
+        loading.innerHTML = '<p>加载失败。<a href="/zh-cn/blog/">访问博客</a></p>';
+      }
+    });
+  </script>
 </body>
 </html>

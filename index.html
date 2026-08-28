@@ -56,43 +56,69 @@
 
       <section class="blog-cards">
         <h2 class="section-title">Latest Posts</h2>
-
-        <article class="blog-card">
-          <div class="card-body">
-            <h3 class="card-title">
-              <a href="/blog/njtech-timetable/">NJTech Timetable</a>
-            </h3>
-            <p class="card-date">Jul 29, 2026</p>
-            <div class="card-tags">
-              <span class="tag">Flutter</span>
-              <span class="tag">Mobile</span>
-            </div>
-            <p class="card-excerpt">A course schedule management tool for Nanjing Tech University students built with Flutter. Supports academic system import, XLS import, course reminders, dark mode, and more.</p>
-            <a href="/blog/njtech-timetable/" class="card-link">Read More &rarr;</a>
-          </div>
-        </article>
-
-        <article class="blog-card">
-          <div class="card-body">
-            <h3 class="card-title">
-              <a href="/blog/pdfreader/">PDF Reader for macOS</a>
-            </h3>
-            <p class="card-date">Jul 29, 2026</p>
-            <div class="card-tags">
-              <span class="tag">Swift</span>
-              <span class="tag">macOS</span>
-              <span class="tag">SwiftUI</span>
-            </div>
-            <p class="card-excerpt">A feature-rich native macOS PDF reader built with SwiftUI &amp; PDFKit. Supports annotations, bookmarks, search, merge, extract, sign, and more.</p>
-            <a href="/blog/pdfreader/" class="card-link">Read More &rarr;</a>
-          </div>
-        </article>
+        <div id="home-loading" class="loading">
+          <div class="spinner"></div>
+          <p>Loading posts...</p>
+        </div>
+        <div id="home-posts" style="display: none;"></div>
       </section>
     </div>
   </main>
   <footer>
     <p>&copy; 2026 DKa1pha. <a href="/privacy.html" style="color: var(--text-secondary);">Privacy Policy</a></p>
   </footer>
+  <script src="/assets/js/supabase.min.js"></script>
+  <script src="/assets/js/auth.js?v=2"></script>
   <script src="/assets/js/main.js?v=4"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const loading = document.getElementById('home-loading');
+      const container = document.getElementById('home-posts');
+
+      function escapeHtml(str) {
+        if (!str) return '';
+        return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+      }
+      function formatDate(dateStr) {
+        if (!dateStr) return '';
+        return new Date(dateStr).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+      }
+
+      try {
+        const { data, error } = await supabaseClient
+          .from('blog_posts')
+          .select('id, title, slug, excerpt, tags, published_at, created_at')
+          .eq('published', true)
+          .eq('lang', 'en')
+          .order('published_at', { ascending: false })
+          .limit(2);
+
+        if (error) throw error;
+
+        if (!data || data.length === 0) {
+          loading.innerHTML = '<p>No posts yet. Check back soon!</p>';
+          return;
+        }
+
+        loading.style.display = 'none';
+        container.style.display = 'flex';
+        container.innerHTML = data.map(post => {
+          const date = post.published_at || post.created_at;
+          const tagsHtml = (post.tags || []).map(t => '<span class="tag">' + escapeHtml(t) + '</span>').join('');
+          const url = '/blog/post.html?slug=' + encodeURIComponent(post.slug);
+          return '<article class="blog-card"><div class="card-body">' +
+            '<h3 class="card-title"><a href="' + url + '">' + escapeHtml(post.title) + '</a></h3>' +
+            '<p class="card-date">' + formatDate(date) + '</p>' +
+            '<div class="card-tags">' + tagsHtml + '</div>' +
+            '<p class="card-excerpt">' + escapeHtml(post.excerpt || '') + '</p>' +
+            '<a href="' + url + '" class="card-link">Read More &rarr;</a>' +
+          '</div></article>';
+        }).join('');
+      } catch (err) {
+        console.error('Failed to load latest posts:', err);
+        loading.innerHTML = '<p>Failed to load posts. <a href="/blog/">Visit Blog</a></p>';
+      }
+    });
+  </script>
 </body>
 </html>
