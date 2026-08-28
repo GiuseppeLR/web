@@ -53,7 +53,7 @@
     }
 
     try {
-      var dbLang = lang === 'zh' ? 'zh' : 'en';
+      var dbLang = lang === 'zh' ? 'zh-cn' : 'en';
       var { data, error } = await window.supabaseClient
         .from('blog_posts')
         .select('id, title, slug, excerpt, tags, published_at, created_at')

@@ -85,7 +85,7 @@
           .from('blog_posts')
           .select('id, title, slug, excerpt, tags, published_at, created_at')
           .eq('published', true)
-          .eq('lang', 'zh')
+          .eq('lang', 'zh-cn')
           .order('published_at', { ascending: false })
           .limit(2);
 
