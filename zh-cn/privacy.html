@@ -37,7 +37,7 @@
   <main>
     <div class="container">
       <h1 class="page-title">隐私政策</h1>
-      <div class="page-content">
+      <div class="page-content" id="privacy-content">
         <p style="color: var(--text-secondary); font-size: 14px;">最后更新：2026 年 8 月 28 日</p>
 
         <p>DK Blog Place（"我们"）运营网站 <a href="https://dka1pha.cc">dka1pha.cc</a>。本隐私政策说明了当您访问我们的网站时，我们如何收集、使用和保护您的信息。</p>
@@ -118,8 +118,33 @@
     </div>
   </main>
   <footer>
-    <p>&copy; 2026 DKa1pha.</p>
+    <p>&copy; 2026 DKa1pha. <a href="/zh-cn/privacy.html" style="color: var(--text-secondary);">隐私政策</a></p>
   </footer>
+  <script src="/assets/js/supabase.min.js"></script>
+  <script src="/assets/js/auth.js?v=2"></script>
+  <script src="/assets/js/marked.min.js?v=5"></script>
   <script src="/assets/js/main.js?v=6"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const { data, error } = await supabaseClient
+          .from('site_settings')
+          .select('value')
+          .eq('key', 'privacy_policy_zh')
+          .single();
+
+        if (!error && data && data.value) {
+          const content = document.getElementById('privacy-content');
+          if (typeof marked !== 'undefined') {
+            content.innerHTML = marked.parse(data.value);
+          } else {
+            content.innerHTML = '<pre style="white-space:pre-wrap;">' + data.value + '</pre>';
+          }
+        }
+      } catch (err) {
+        // Keep static content on error
+      }
+    });
+  </script>
 </body>
 </html>
