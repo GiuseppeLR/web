@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /admin-backend/
+
+Sitemap: https://dka1pha.cc/sitemap.xml

@@ -1559,3 +1559,62 @@ footer {
 .donate-card.qr-trigger {
   cursor: pointer;
 }
+
+/* ── 404 Error Page ── */
+.error-page {
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.error-code {
+  font-size: 120px;
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 20px;
+  letter-spacing: -4px;
+}
+
+.error-message {
+  font-size: 18px;
+  color: var(--text-secondary);
+  margin-bottom: 40px;
+}
+
+.error-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.error-btn {
+  display: inline-block;
+  padding: 12px 28px;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.error-btn-primary {
+  background: var(--accent);
+  color: #fff;
+}
+
+.error-btn-primary:hover {
+  background: var(--accent-hover);
+  transform: translateY(-2px);
+}
+
+.error-btn-secondary {
+  background: var(--bg-secondary);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.error-btn-secondary:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
